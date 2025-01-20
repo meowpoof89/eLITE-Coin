@@ -64,6 +64,49 @@ This document provides a comprehensive list of commands for managing, debugging,
   omnilite-cli omni_send <from_address> <to_address> <property_id> <amount>
   ```
 
+### **Creating and Minting New Tokens**
+#### **Step 1: Create a Fixed Supply Token**
+- Create a fixed supply token:
+  ```bash
+  omnilite-cli omni_sendissuancefixed <from_address> <ecosystem> <type> <previous_id> <category> <subcategory> <name> <url> <data> <amount>
+  ```
+  Example:
+  ```bash
+  omnilite-cli omni_sendissuancefixed "mgDuVRFjjJRsV8VBL7VkW3n7beUDqxHt5p" 1 1 0 "Utilities" "Energy" "MyToken" "http://example.com" "Token description" "1000"
+  ```
+  - `<ecosystem>`: `1` for main ecosystem, `2` for test ecosystem.
+  - `<type>`: `1` for indivisible tokens, `2` for divisible tokens.
+
+#### **Step 2: Create a Managed Token**
+- Create a managed token (allows future minting):
+  ```bash
+  omnilite-cli omni_sendissuancemanaged <from_address> <ecosystem> <type> <previous_id> <category> <subcategory> <name> <url> <data>
+  ```
+  Example:
+  ```bash
+  omnilite-cli omni_sendissuancemanaged "mgDuVRFjjJRsV8VBL7VkW3n7beUDqxHt5p" 1 1 0 "Finance" "Savings" "ManagedToken" "http://example.com" "Managed token description"
+  ```
+
+#### **Step 3: Mint More Tokens (Managed Only)**
+- Mint additional tokens for a managed property:
+  ```bash
+  omnilite-cli omni_sendgrant <from_address> <to_address> <property_id> <amount>
+  ```
+  Example:
+  ```bash
+  omnilite-cli omni_sendgrant "mgDuVRFjjJRsV8VBL7VkW3n7beUDqxHt5p" "mfWxJ45yp2SFn7UciZyNpvDKrzbhyfKrY8" 2147483651 "500"
+  ```
+
+#### **Step 4: Revoke Tokens (Managed Only)**
+- Revoke tokens from circulation:
+  ```bash
+  omnilite-cli omni_sendrevoke <from_address> <property_id> <amount>
+  ```
+  Example:
+  ```bash
+  omnilite-cli omni_sendrevoke "mgDuVRFjjJRsV8VBL7VkW3n7beUDqxHt5p" 2147483651 "100"
+  ```
+
 ### **Checking OmniLite Logs**
 - View the latest log entries:
   ```bash
@@ -82,17 +125,17 @@ This document provides a comprehensive list of commands for managing, debugging,
 ### **Starting and Stopping ElectrumX**
 - Start ElectrumX in the foreground:
   ```bash
-  python3 /root/electrumx/electrumx_server --conf /root/electrumx/electrumx.conf
+  python3 /root/electrumx/electrumx_server.py --conf /root/electrumx/electrumx.conf
   ```
 
 - Start ElectrumX in the background:
   ```bash
-  nohup python3 /root/electrumx/electrumx_server --conf /root/electrumx/electrumx.conf >> /root/electrumx/electrumx.log 2>&1 &
+  nohup python3 /root/electrumx/electrumx_server.py --conf /root/electrumx/electrumx.conf >> /root/electrumx/electrumx.log 2>&1 &
   ```
 
 - Stop ElectrumX (find and kill the process):
   ```bash
-  pkill -f electrumx_server
+  pkill -f electrumx_server.py
   ```
 
 ### **Checking ElectrumX Logs**
@@ -110,7 +153,7 @@ This document provides a comprehensive list of commands for managing, debugging,
 ### **ElectrumX Database Management**
 - Rebuild the database (if needed):
   ```bash
-  rm -rf ~/.litecoin/electrumx_db && python3 /root/electrumx/electrumx_server --conf /root/electrumx/electrumx.conf
+  rm -rf ~/.litecoin/electrumx_db && python3 /root/electrumx/electrumx_server.py --conf /root/electrumx/electrumx.conf
   ```
 
 - Check database directory size:
@@ -167,14 +210,14 @@ This document provides a comprehensive list of commands for managing, debugging,
 ### **Check if ElectrumX is Running**
 - Verify the process is running:
   ```bash
-  ps aux | grep electrumx_server
+  ps aux | grep electrumx_server.py
   ```
 
 ### **Common Debugging Commands**
 - Restart OmniLite and ElectrumX:
   ```bash
   omnilite-cli stop && omnilited -daemon
-  pkill -f electrumx_server && nohup python3 /root/electrumx/electrumx_server --conf /root/electrumx/electrumx.conf >> /root/electrumx/electrumx.log 2>&1 &
+  pkill -f electrumx_server.py && nohup python3 /root/electrumx/electrumx_server.py --conf /root/electrumx/electrumx.conf >> /root/electrumx/electrumx.log 2>&1 &
   ```
 
 - Check network connectivity:
